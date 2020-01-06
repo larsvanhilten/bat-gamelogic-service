@@ -1,0 +1,44 @@
+{
+  "name": "bat-gamelogic-service",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "scripts": {
+    "prebuild": "npm run lint",
+    "build": "tsc",
+    "postbuild": "cp .env dist",
+    "start": "node --inspect=5858 -r ts-node/register ./src/index.ts",
+    "start:watch": "nodemon",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format:fix": "pretty-quick --staged",
+    "precommit": "run-s format:fix lint",
+    "lint": "tslint -c tslint.json -p tsconfig.json --fix"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/joi": "^16.1.7",
+    "axios": "^0.19.0",
+    "dotenv": "^8.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^3.4.1",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^6.1.1",
+    "@types/hapi__joi": "^16.0.3",
+    "@types/jsonwebtoken": "^8.3.5",
+    "@types/mongodb": "^3.3.14",
+    "@types/node": "^12.7.8",
+    "@types/socket.io": "^2.1.4",
+    "husky": "^3.0.7",
+    "nodemon": "^1.19.3",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^1.18.2",
+    "pretty-quick": "^1.11.1",
+    "ts-node": "^8.4.1",
+    "tslint": "^5.20.0",
+    "typescript": "^3.6.3"
+  }
+}
