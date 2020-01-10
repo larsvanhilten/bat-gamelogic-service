@@ -1,13 +1,15 @@
+import 'reflect-metadata';
 import dotenv from 'dotenv';
-import { MongoClient } from 'mongodb';
 import app from './app';
+import { MongoService } from './services/mongo.service';
+import { container } from 'tsyringe';
 
 const start = async () => {
   dotenv.config();
+  const { HTTP_PORT, NODE_ENV = 'develop' } = process.env;
 
-  const { HTTP_PORT, DATABASE_URL, NODE_ENV = 'develop' } = process.env;
-
-  const mongoClient = await MongoClient.connect(DATABASE_URL);
+  const mongoService = container.resolve(MongoService);
+  mongoService.connect();
 
   const onError = (error: any) => {
     let message = '';
@@ -30,7 +32,7 @@ const start = async () => {
   process.on('unhandledRejection', onError);
   process.on('uncaughtException', onError);
 
-  app(HTTP_PORT, mongoClient);
+  app(HTTP_PORT);
 
   console.info(`(${NODE_ENV} environment) server listening on :: ${HTTP_PORT}`);
 };

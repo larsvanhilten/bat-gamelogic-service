@@ -7,7 +7,7 @@ interface Ship {
   isDone?: boolean;
 }
 
-export default (grid: string[][]): boolean => {
+export function validateGrid(grid: string[][]): boolean {
   const horizontalShips: Ship[] = [];
   const verticalShips: Ship[] = [];
   for (let y = 0; y < grid.length; y++) {
@@ -64,7 +64,7 @@ export default (grid: string[][]): boolean => {
   });
 
   return verifyShips(count);
-};
+}
 
 const verifyShips = (count: number[]): boolean => {
   return (

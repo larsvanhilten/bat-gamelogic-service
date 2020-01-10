@@ -1,10 +1,11 @@
-import start from './start';
+import { start } from './start';
+import { disconnect } from './disconnect';
 import { Socket } from '../middleware/authenticate';
-import { appendParameters } from '../helpers/utils';
-import { MongoClient } from 'mongodb';
+import { appendParameters } from '../utils/append-parameters';
 
-export default (io: SocketIO.Server, mongoClient: MongoClient) => {
+export default (io: SocketIO.Server) => {
   io.on('connect', (socket: Socket) => {
-    socket.on('START', appendParameters(start, socket, mongoClient));
+    socket.on('START', appendParameters(start, socket));
+    socket.on('disconnect', appendParameters(disconnect, socket));
   });
 };

@@ -1,11 +1,10 @@
 import socketIO from 'socket.io';
 import connect from './events/connect';
 import authenticate from './middleware/authenticate';
-import { MongoClient } from 'mongodb';
 
-export default (port: string, mongoClient: MongoClient) => {
+export default (port: string) => {
   const io = socketIO(port);
   io.use(authenticate);
 
-  connect(io, mongoClient);
+  connect(io);
 };

@@ -2,7 +2,7 @@ export interface Error {
   message: string;
 }
 
-export default (error: any): Error => {
+export function handleErrors(error: any): Error {
   let message = 'Oops, something went wrong';
 
   if (error.message) {
@@ -16,4 +16,4 @@ export default (error: any): Error => {
   return {
     message
   };
-};
+}

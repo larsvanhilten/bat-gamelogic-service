@@ -1,15 +1,17 @@
+import { container } from 'tsyringe';
 import joi from '@hapi/joi';
 import { Socket } from '../middleware/authenticate';
-import validateGrid from '../helpers/validate-grid';
-import errorHandler from '../helpers/error-handler';
-import { MongoClient } from 'mongodb';
-import { insertGame } from '../helpers/game-store';
+import { validateGrid } from '../utils/validate-grid';
+import { handleErrors } from '../utils/handle-errors';
+import { generateGrid } from '../utils/generate-grid';
+import { GameStoreService } from '../services/game-store.service';
 
 export interface Config {
-  grid: number[][];
+  grid: string[][];
   chatVoteTime: number;
 }
 
+const gameStoreService = container.resolve(GameStoreService);
 const schema = joi.object({
   grid: joi
     .array()
@@ -27,30 +29,33 @@ const schema = joi.object({
     .required()
 });
 
-export default async (config: Config, socket: Socket, mongoClient: MongoClient) => {
+export async function start(config: Config, socket: Socket): Promise<void> {
   try {
     if (!socket.token) {
       throw Error('Authentication error');
     }
 
-    const { grid, chatVoteTime } = await schema.validateAsync(config);
+    const { grid: playerGrid, chatVoteTime } = await schema.validateAsync(config);
 
-    const isValidGrid = validateGrid(grid);
+    const isValidGrid = validateGrid(playerGrid);
     if (!isValidGrid) {
       throw Error('Invalid grid');
     }
 
-    // Save grid to database
-    const { username } = socket.token;
-    insertGame(mongoClient, { username, chatVoteTime, grid });
+    // Generate grid for chat
+    const chatGrid = generateGrid();
 
-    // Join room
+    // Save game to database
+    const { username } = socket.token;
+    gameStoreService.insertGame({ username, chatVoteTime, playerGrid, chatGrid });
+
+    // Join socket room
     socket.join(username);
 
-    // Respond with ?
-    socket.emit('START_RESPONSE', { message: 'Game successfully created' });
+    // Respond that backend is ready
+    socket.emit('START_RESPONSE');
   } catch (error) {
-    const response = errorHandler(error);
+    const response = handleErrors(error);
     socket.emit('ERROR_RESPONSE', response);
   }
-};
+}
