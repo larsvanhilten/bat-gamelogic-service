@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import app from './app';
 import { MongoService } from './services/mongo.service';
 import { container } from 'tsyringe';
+import { TwitchService } from './services/twitch.service';
 
 const start = async () => {
   dotenv.config();
@@ -10,6 +11,9 @@ const start = async () => {
 
   const mongoService = container.resolve(MongoService);
   mongoService.connect();
+
+  const twitchService = container.resolve(TwitchService);
+  twitchService.connect();
 
   const onError = (error: any) => {
     let message = '';
