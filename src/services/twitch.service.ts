@@ -53,18 +53,24 @@ export class TwitchService {
     return grid;
   }
 
+  private characterToNumber(character: string): number {
+    return character.toLowerCase().charCodeAt(0) - 97;
+  }
+
   private onMessage(userState: Userstate, message: string): void {
     try {
       if (message.startsWith('!fire')) {
-        const x = parseInt(message.substring(6, 7), 10);
-        const y = parseInt(message.substring(8, 9), 10);
+        const x = this.characterToNumber(message.substring(6, 7));
+        const y = parseInt(message.substring(7, 9), 10);
 
         if (!isNaN(x) && !isNaN(y)) {
           const username = userState['display-name'];
           const votes = this.votes[username];
-          votes[y - 1][x - 1]++;
+          votes[y - 1][x]++;
         }
       }
-    } catch {}
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

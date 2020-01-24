@@ -5,7 +5,6 @@ import { validateGrid } from '../utils/validate-grid';
 import { handleErrors } from '../utils/handle-errors';
 import { generateGrid } from '../utils/generate-grid';
 import { GameStoreService } from '../services/game-store.service';
-import { TwitchService } from '../../src/services/twitch.service';
 
 export interface Config {
   grid: string[][];
@@ -13,7 +12,6 @@ export interface Config {
 }
 
 const gameStoreService = container.resolve(GameStoreService);
-const twitchService = container.resolve(TwitchService);
 
 const schema = joi.object({
   grid: joi
@@ -54,8 +52,6 @@ export async function start(config: Config, socket: Socket): Promise<void> {
 
     // Join socket room
     socket.join(username);
-    // Tell Twitch bot to listen to channel
-    twitchService.joinChannel(username);
 
     // Respond that backend is ready
     socket.emit('START_RESPONSE');

@@ -15,7 +15,7 @@ export async function disconnect(reason: string, socket: Socket): Promise<void> 
     const { username } = socket.token;
 
     // Inform the partipants the host has disconnected
-    socket.to(username).emit('host_disconnected');
+    socket.to(username).emit('DISCONNECTED_RESPONSE');
 
     // Stop listening to Twitch channels' chat
     twitchService.leaveChannel(username);
